@@ -119,7 +119,24 @@ export function FundingModal({ accountId, onClose, onSuccess }: FundingModalProp
                 validate: {
                   validCard: (value) => {
                     if (fundingType !== "card") return true;
-                    return value.startsWith("4") || value.startsWith("5") || "Invalid card number";
+
+                    //Luhn's validation
+                    let sum = 0;
+                    let secondNum = false;
+                    for (let n = value.length - 1; n >= 0; n--)
+                    {
+                        let digit = parseInt(value.charAt(n), 10);
+                        
+                        if (secondNum == true){
+                          digit = digit * 2;
+                        }
+
+                        sum += Math.floor(digit / 10);
+                        sum += digit % 10;
+
+                        secondNum = !secondNum;
+                    }
+                    return (sum % 10 == 0) || "Invalid card number";
                   },
                 },
               })}
