@@ -189,7 +189,21 @@ export default function SignupPage() {
                   Date of Birth
                 </label>
                 <input
-                  {...register("dateOfBirth", { required: "Date of birth is required" })}
+                  {...register("dateOfBirth", { required: "Date of birth is required",
+                    validate: {
+                      oldEnough: (value) => {
+                        const today = new Date();
+                        const dob = new Date(value);
+                        let age = today.getFullYear() - dob.getFullYear();
+                        if (dob.getMonth() > today.getMonth()){
+                          age--;
+                        }else if((dob.getMonth() == today.getMonth()) && (dob.getDate()) >= today.getDate()){
+                          age--;
+                        }
+                        return age >= 18 || "Must be 18 or older to sign up.";
+                      }
+                    }
+                  })}
                   type="date"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
                 />
