@@ -44,6 +44,10 @@ export function FundingModal({ accountId, onClose, onSuccess }: FundingModalProp
   const onSubmit = async (data: FundingFormData) => {
     setError("");
 
+    if (data.fundingType === "bank" && !data.routingNumber) {
+      setError("Routing number is required for bank transfers");
+      return;
+    }
     try {
       const amount = parseFloat(data.amount);
 
