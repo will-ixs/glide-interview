@@ -157,20 +157,21 @@ export const accountRouter = router({
         });
       }
 
-      const accountTransactions = await db
-        .select()
+      const enrichedTransactions = await db
+        .select({
+          id: transactions.id,
+          accountId: transactions.accountId,
+          type: transactions.type,
+          amount: transactions.amount,
+          description: transactions.description,
+          status: transactions.status,
+          createdAt: transactions.createdAt,
+          processedAt: transactions.processedAt,
+          accountType: accounts.accountType,
+        })
         .from(transactions)
+        .leftJoin(accounts, eq(transactions.accountId, accounts.id))
         .where(eq(transactions.accountId, input.accountId));
-
-      const enrichedTransactions = [];
-      for (const transaction of accountTransactions) {
-        const accountDetails = await db.select().from(accounts).where(eq(accounts.id, transaction.accountId)).get();
-
-        enrichedTransactions.push({
-          ...transaction,
-          accountType: accountDetails?.accountType,
-        });
-      }
 
       return enrichedTransactions;
     }),
