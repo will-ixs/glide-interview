@@ -57,7 +57,7 @@ export function initDb() {
   `);
 }
 
-export function closeAllConnections() {
+export function closeConnection() {
   try {
     if (sqlite.open) {
       sqlite.close();
@@ -70,31 +70,31 @@ export function closeAllConnections() {
 if (typeof process !== 'undefined') {
   process.on('SIGINT', () => {
     console.log('Closing database connections...');
-    closeAllConnections();
+    closeConnection();
     process.exit(0);
   });
 
   process.on('SIGTERM', () => {
     console.log('Closing database connections...');
-    closeAllConnections();
+    closeConnection();
     process.exit(0);
   });
 
   process.on('exit', () => {
-    closeAllConnections();
+    closeConnection();
   });
 
   // Handle uncaught exceptions
   process.on('uncaughtException', (error) => {
     console.error('Uncaught exception:', error);
-    closeAllConnections();
+    closeConnection();
     process.exit(1);
   });
 
   // Handle hot reload in development (Next.js)
   if (process.env.NODE_ENV === 'development') {
     process.on('beforeExit', () => {
-      closeAllConnections();
+      closeConnection();
     });
   }
 }
