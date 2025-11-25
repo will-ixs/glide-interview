@@ -6,9 +6,10 @@ import { accounts, transactions } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 
 function generateAccountNumber(): string {
-  return Math.floor(Math.random() * 1000000000)
-    .toString()
-    .padStart(10, "0");
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array); 
+  const accountNumber = array[0] % 1000000000;
+  return accountNumber.toString().padStart(10, "0");
 }
 
 export const accountRouter = router({
