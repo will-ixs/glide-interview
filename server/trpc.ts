@@ -8,9 +8,9 @@ import { eq } from "drizzle-orm";
 
 export async function createContext(opts: CreateNextContextOptions | FetchCreateContextFnOptions) {
   // Handle different adapter types
+  const now = new Date();
   let req: any;
   let res: any;
-
   if ("req" in opts && "res" in opts) {
     // Next.js adapter
     req = opts.req;
@@ -54,9 +54,9 @@ export async function createContext(opts: CreateNextContextOptions | FetchCreate
 
       const session = await db.select().from(sessions).where(eq(sessions.token, token)).get();
 
-      if (session && new Date(session.expiresAt) > new Date()) {
+      if (session && new Date(session.expiresAt) > now) {
         user = await db.select().from(users).where(eq(users.id, decoded.userId)).get();
-        const expiresIn = new Date(session.expiresAt).getTime() - new Date().getTime();
+        const expiresIn = new Date(session.expiresAt).getTime() - now.getTime();
         if (expiresIn < 60000) {
           console.warn("Session about to expire");
         }
