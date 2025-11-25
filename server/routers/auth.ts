@@ -110,6 +110,8 @@ export const authRouter = router({
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 7);
 
+      //Remove all sessions except for current
+      await db.delete(sessions).where(eq(sessions.userId, user.id));
       await db.insert(sessions).values({
         userId: user.id,
         token,
