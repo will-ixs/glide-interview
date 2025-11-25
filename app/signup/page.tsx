@@ -33,6 +33,8 @@ export default function SignupPage() {
     watch,
     trigger,
   } = useForm<SignupFormData>();
+  const [warnings, setWarnings] = useState<string[]>([]);
+  const [email, setEmail] = useState("");
   const signupMutation = trpc.auth.signup.useMutation();
 
   const password = watch("password");
@@ -64,6 +66,83 @@ export default function SignupPage() {
     }
   };
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    warnEmail(e.target.value);
+  };
+
+  const warnEmail = (email: string) => {
+    if(!email){
+      setWarnings([]);
+    }
+    const warningList: string[] = [];
+    const commonTLDTypos = {
+      '.con': '.com',
+      '.cmo': '.com',
+      '.ocm': '.com',
+      '.vom': '.com',
+      '.cm': '.com',
+      '.col': '.com',
+      '.comm': '.com',
+      '.comn': '.com',
+      '.conm': '.com',
+      '.rog': '.org',
+      '.ogr': '.org',
+      '.nte': '.net',
+      '.ent': '.net',
+      '.met': '.net'
+    };
+    
+    const lowerEmail = email.toLowerCase();
+    for (const [typo, correction] of Object.entries(commonTLDTypos)) {
+      if (lowerEmail.endsWith(typo)) {
+        warningList.push(`Did you mean "${email.slice(0, -typo.length)}${correction}"?`);
+      }
+    }
+
+       // Check for mixed case
+    if (email !== email.toLowerCase() && /[A-Z]/.test(email)) {
+      warningList.push(`Email will be stored as: ${email.toLowerCase()}`);
+    }
+
+    // Check for unusual characters
+    if (/[^a-zA-Z0-9.@_-]/.test(email.split('@')[0])) {
+      warningList.push('Email contains unusual characters that may cause issues');
+    }
+
+    // Check for very long local part
+    const localPart = email.split('@')[0];
+    if (localPart.length > 30) {
+      warningList.push('Email is unusually long');
+    }
+    setWarnings(warningList);
+  }
+  const validateEmail = (email: string): string | true =>  {
+    if(!email){
+      return "Email is required.";
+    }
+
+    if (email.includes('..')) {
+      return "Email cannot contain consecutive dots";
+    }
+
+    const [localPart, domain] = email.split('@');
+    if (localPart.startsWith('.') || localPart.endsWith('.')) {
+      return "Email cannot start or end with a dot";
+    }
+
+    if (!domain || !domain.includes('.')) {
+      return "Email must have a valid domain (e.g., example.com)";
+    }
+
+    const domainParts = domain.split('.');
+    const tld = domainParts[domainParts.length - 1];
+    if (tld.length < 2) {
+      return "Top-level domain must be at least 2 characters";
+    }
+
+    return true;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -83,13 +162,19 @@ export default function SignupPage() {
                   {...register("email", {
                     required: "Email is required",
                     pattern: {
-                      value: /^\S+@\S+$/i,
+                      value: /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/,
                       message: "Invalid email address",
                     },
+                    onChange: handleEmailChange,
+                    validate: validateEmail
                   })}
                   type="email"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
                 />
+                {warnings.map((warning, index) => (
+                    <p key={index} className="mt-1 text-sm text-yellow-600">{warning}</p>
+                  ))
+                }
                 {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
               </div>
 
