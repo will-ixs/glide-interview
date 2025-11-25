@@ -143,6 +143,17 @@ export default function SignupPage() {
     return true;
   }
 
+  const VALID_US_CODES = new Set([
+    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
+    'DC',
+    'AS', 'GU', 'MP', 'PR', 'VI' // American Samoa, Guam, Mariana Islands, Puerto Rico, Virgin Islands
+  ]);
+
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -356,7 +367,12 @@ export default function SignupPage() {
                       pattern: {
                         value: /^[A-Z]{2}$/,
                         message: "Use 2-letter state code",
-                      },
+                      },                    
+                      validate: {
+                      unknownAbbreviation: (value) => {
+                        return VALID_US_CODES.has(value.toUpperCase()) || "Unknown State" 
+                      }
+                    }
                     })}
                     type="text"
                     placeholder="CA"
