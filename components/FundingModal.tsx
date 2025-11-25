@@ -30,8 +30,16 @@ export function FundingModal({ accountId, onClose, onSuccess }: FundingModalProp
     },
   });
 
+  const utils = trpc.useUtils();
   const fundingType = watch("fundingType");
-  const fundAccountMutation = trpc.account.fundAccount.useMutation();
+  const fundAccountMutation = trpc.account.fundAccount.useMutation({
+    onSuccess: () => {
+      utils.account.getTransactions.invalidate({accountId});
+    },
+    onError: () => {
+      console.error("Failed to fund account: ", error);
+    }
+  });
 
   const onSubmit = async (data: FundingFormData) => {
     setError("");

@@ -7,12 +7,7 @@ const dbPath = "bank.db";
 const sqlite = new Database(dbPath);
 export const db = drizzle(sqlite, { schema });
 
-const connections: Database.Database[] = [];
-
 export function initDb() {
-  const conn = new Database(dbPath);
-  connections.push(conn);
-
   // Create tables if they don't exist
   sqlite.exec(`
     CREATE TABLE IF NOT EXISTS users (
@@ -60,6 +55,48 @@ export function initDb() {
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
   `);
+}
+
+export function closeAllConnections() {
+  try {
+    if (sqlite.open) {
+      sqlite.close();
+    }
+  } catch (error) {
+    console.error("Error closing main connection:", error);
+  }
+}
+
+if (typeof process !== 'undefined') {
+  process.on('SIGINT', () => {
+    console.log('Closing database connections...');
+    closeAllConnections();
+    process.exit(0);
+  });
+
+  process.on('SIGTERM', () => {
+    console.log('Closing database connections...');
+    closeAllConnections();
+    process.exit(0);
+  });
+
+  process.on('exit', () => {
+    closeAllConnections();
+  });
+
+  // Handle uncaught exceptions
+  process.on('uncaughtException', (error) => {
+    console.error('Uncaught exception:', error);
+    closeAllConnections();
+    process.exit(1);
+  });
+
+  // Handle hot reload in development (Next.js)
+  if (process.env.NODE_ENV === 'development') {
+    process.on('beforeExit', () => {
+      closeAllConnections();
+    });
+  }
 }
 
 // Initialize database on import
