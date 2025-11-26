@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { protectedProcedure, router } from "../trpc";
 import { db } from "@/lib/db";
 import { accounts, transactions } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc} from "drizzle-orm";
 
 function generateAccountNumber(): string {
   const array = new Uint32Array(1);
@@ -171,8 +171,8 @@ export const accountRouter = router({
         })
         .from(transactions)
         .leftJoin(accounts, eq(transactions.accountId, accounts.id))
-        .where(eq(transactions.accountId, input.accountId));
-
+        .where(eq(transactions.accountId, input.accountId))
+        .orderBy(desc(transactions.createdAt));
       return enrichedTransactions;
     }),
 });
