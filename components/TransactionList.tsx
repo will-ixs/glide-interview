@@ -43,34 +43,34 @@ export function TransactionList({ accountId }: TransactionListProps) {
   }
 
   return (
-    <div className="bg-white shadow overflow-hidden rounded-lg">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="bg-(color:--color-mg) shadow overflow-hidden rounded-lg">
+      <table className="min-w-full divide-y divide-(color:--color-fg)">
+        <thead className="bg-(color:--color-mg)">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium color(--color-text-primary) uppercase tracking-wider">Date</th>
+            <th className="px-6 py-3 text-left text-xs font-medium color(--color-text-primary) uppercase tracking-wider">Type</th>
+            <th className="px-6 py-3 text-left text-xs font-medium color(--color-text-primary) uppercase tracking-wider">
               Description
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th className="px-6 py-3 text-left text-xs font-medium color(--color-text-primary) uppercase tracking-wider">Amount</th>
+            <th className="px-6 py-3 text-left text-xs font-medium color(--color-text-primary) uppercase tracking-wider">Status</th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-(color:--color-mg) divide-y divide-(color:--color-fg)">
           {transactions.map((transaction) => (
             <tr key={transaction.id}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td className="px-6 py-4 whitespace-nowrap text-sm color(--color-text-primary)">
                 {formatDate(transaction.createdAt!)}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td className="px-6 py-4 whitespace-nowrap text-sm color(--color-text-primary)">
                 <span className={`capitalize ${transaction.type === "deposit" ? "text-green-600" : "text-red-600"}`}>
                   {transaction.type}
                 </span>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm color(--color-text-secondary)">
                 {transaction.description || "-"}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td className="px-6 py-4 whitespace-nowrap text-sm color(--color-text-secondary)">
                 <span className={transaction.type === "deposit" ? "text-green-600" : "text-red-600"}>
                   {transaction.type === "deposit" ? "+" : "-"}
                   {formatCurrency(transaction.amount)}

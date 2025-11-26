@@ -68,13 +68,13 @@ export function FundingModal({ accountId, onClose, onSuccess }: FundingModalProp
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-md w-full p-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Fund Your Account</h3>
+    <div className="fixed inset-0 bg-(color:--color-bg) bg-opacity-75 flex items-center justify-center p-4">
+      <div className="bg-(color:--color-mg) rounded-lg max-w-md w-full p-6">
+        <h3 className="text-lg font-medium color(--color-text-primary) mb-4">Fund Your Account</h3>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Amount</label>
+            <label className="block text-sm font-medium color(--color-text-secondary)">Amount</label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <span className="text-gray-500 sm:text-sm">$</span>
@@ -104,7 +104,7 @@ export function FundingModal({ accountId, onClose, onSuccess }: FundingModalProp
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Funding Source</label>
+            <label className="block text-sm font-medium color(--color-text-secondary)-700 mb-2">Funding Source</label>
             <div className="space-y-2">
               <label className="flex items-center">
                 <input {...register("fundingType")} type="radio" value="card" className="mr-2" />
@@ -112,13 +112,13 @@ export function FundingModal({ accountId, onClose, onSuccess }: FundingModalProp
               </label>
               <label className="flex items-center">
                 <input {...register("fundingType")} type="radio" value="bank" className="mr-2" />
-                <span>Bank Account</span>
+                <span className="text-(color:--background)">Bank Account</span>
               </label>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium color(--color-text-secondary)">
               {fundingType === "card" ? "Card Number" : "Account Number"}
             </label>
             <input
@@ -161,7 +161,7 @@ export function FundingModal({ accountId, onClose, onSuccess }: FundingModalProp
 
           {fundingType === "bank" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700">Routing Number</label>
+              <label className="block text-sm font-medium color(--color-text-secondary)">Routing Number</label>
               <input
                 {...register("routingNumber", {
                   required: "Routing number is required",
